@@ -260,7 +260,7 @@
         {
          "columns":18,
          "firstgid":1,
-         "image":"..\/src\/assets\/Overworld_Tileset.png",
+         "image":"\/assets\/Overworld_Tileset.png",
          "imageheight":208,
          "imagewidth":288,
          "margin":0,
@@ -273,7 +273,7 @@
         {
          "columns":8,
          "firstgid":235,
-         "image":"..\/src\/assets\/Tiles_(animated)\/Overworld\/water_tile_anim_strip_8.png",
+         "image":"\/assets\/Tiles_(animated)\/Overworld\/water_tile_anim_strip_8.png",
          "imageheight":16,
          "imagewidth":128,
          "margin":0,

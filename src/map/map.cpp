@@ -6,6 +6,9 @@ static cute_tiled_map_t *map;
 static cute_tiled_layer_t *layer;
 static cute_tiled_tileset_t *tileset;
 static Texture *texture;
+static void noop_update(float) {}
+static void noop_events(SDL_Event *) {}
+static void noop_cleanup() {}
 
 static void render(SDL_Renderer *renderer)
 {
@@ -50,13 +53,13 @@ static void render(SDL_Renderer *renderer)
 
         int tileset_columns = texture_to_use->tileset_width / map->tilewidth;
 
-        const SDL_FRect srect = {
+        SDL_FRect srect = {
             (float)((tile_id - texture_to_use->firstgid) % tileset_columns * map->tilewidth),
-            float((tile_id - texture_to_use->firstgid) / tileset_columns * map->tileheight),
+            (float)((tile_id - texture_to_use->firstgid) / tileset_columns * map->tileheight),
             (float)(map->tilewidth),
             (float)(map->tileheight)};
 
-        const SDL_FRect drect = {
+        SDL_FRect drect = {
             (float)(j * map->tilewidth),
             (float)(i * map->tileheight),
             (float)(map->tilewidth),
@@ -90,11 +93,12 @@ Entity init_map(SDL_Renderer *renderer)
 
   const char *map_path = full_path.c_str();
   map = cute_tiled_load_map_from_file(map_path, NULL);
+  SDL_Log("map loading from : %s", map_path);
 
   if (!map)
   {
     SDL_Log("Failed to load map: %s", SDL_GetError());
-    SDL_Log("Tried path: %s", full_path.c_str());
+    SDL_Log("Tried path: %s", map_path);
     return {nullptr, nullptr, nullptr, nullptr};
   }
   SDL_Log("Map loaded successfully");
@@ -108,16 +112,22 @@ Entity init_map(SDL_Renderer *renderer)
 
   while (tileset)
   {
-    SDL_Log("Loading texture from: %s", tileset->image.ptr);
-    current_texture->texture = IMG_LoadTexture(renderer, tileset->image.ptr);
+    std::string texture_path = std::string(base_path) + tileset->image.ptr;
+    // Convert backslashes to forward slashes
+    for (auto &c : texture_path)
+      if (c == '\\')
+        c = '/';
+
+    current_texture->texture = IMG_LoadTexture(renderer, texture_path.c_str());
     if (!current_texture->texture)
     {
-      SDL_Log("Error loading texture for tileset");
+      SDL_Log("Error loading texture for tileset: %s", texture_path.c_str());
     }
     else
     {
-      SDL_Log("Texture loaded successfully");
+      SDL_Log("Texture loaded successfully: %s", texture_path.c_str());
     }
+
     current_texture->firstgid = tileset->firstgid;
     current_texture->tilecount = tileset->tilecount;
     current_texture->tileset_width = tileset->imagewidth;
@@ -136,8 +146,6 @@ Entity init_map(SDL_Renderer *renderer)
     }
   }
 
-  // Entity map_e = {.cleanup = render, .handle_events = render, .render = render, .update = render};
-  Entity map_e = {nullptr, nullptr, render, nullptr};
-  // Entity map_e = {.render = render};
+  Entity map_e = {noop_cleanup, noop_events, render, noop_update}; // FIXME : free the memory... someones pc is going to crash
   return map_e;
 }

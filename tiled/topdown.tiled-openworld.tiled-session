@@ -3,10 +3,24 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "overworld.tmx",
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "overworld.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 7,
+            "viewCenter": {
+                "x": 266,
+                "y": 106
+            }
+        },
+        "overworld.tmx#Overworld_Tileset": {
+            "scaleInDock": 3
+        },
+        "overworld.tmx#Water_Tileset": {
+            "scaleInDock": 2
+        }
     },
     "last.exportedFilePath": "C:/Users/adelb/GameDev/tiled",
     "last.imagePath": "C:/Users/adelb/GameDev/src/assets/Tiles_(animated)/Overworld",
@@ -15,9 +29,11 @@
     "map.tileHeight": 16,
     "map.tileWidth": 16,
     "openFiles": [
+        "overworld.tmx"
     ],
     "project": "topdown.tiled-openworld.tiled-project",
     "recentFiles": [
+        "overworld.tmx"
     ],
     "tileset.embedInMap": true,
     "tileset.tileSize": {
