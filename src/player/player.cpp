@@ -51,16 +51,15 @@ static void update(float delta_time)
 static void render(SDL_Renderer *renderer)
 {
   SDL_RenderTexture(renderer, player_texture, &player_sprite, &player_pos);
-  SDL_SetTextureScaleMode(player_texture, SDL_SCALEMODE_NEAREST);
 }
 
-Entity init_player(SDL_Renderer *renderer)
+void init_player(SDL_Renderer *renderer)
 {
   const char *base_path = SDL_GetBasePath(); // folder containing the exe
   if (!base_path)
   {
     SDL_Log("SDL_GetBasePath failed: %s", SDL_GetError());
-    return {nullptr, nullptr, nullptr, nullptr};
+    return;
   }
 
   // Make sure to add a slash if SDL_GetBasePath doesn't have one
@@ -74,6 +73,7 @@ Entity init_player(SDL_Renderer *renderer)
 
   SDL_Log("player texture init");
   player_texture = IMG_LoadTexture(renderer, full_path.c_str());
+  SDL_SetTextureScaleMode(player_texture, SDL_SCALEMODE_NEAREST);
 
   if (!player_texture)
   {
@@ -82,5 +82,6 @@ Entity init_player(SDL_Renderer *renderer)
   }
 
   Entity player = {cleanup, handle_events, render, update};
-  return player;
+
+  create_entity(player);
 }

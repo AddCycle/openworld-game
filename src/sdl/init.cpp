@@ -12,8 +12,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv)
 
   state->window = SDL_CreateWindow(
       "SDL3 Game",
-      800,
-      600,
+      1280,
+      720,
       NULL);
 
   if (!state->window)
@@ -31,10 +31,13 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv)
   }
 
   // initializing the map
-  entities[entities_count++] = init_map(state->renderer);
+  init_map(state->renderer);
 
   // initializing the player
-  entities[entities_count++] = init_player(state->renderer);
+  init_player(state->renderer);
+
+  // 320x180 || 640x320
+  SDL_SetRenderLogicalPresentation(state->renderer, 320, 180, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
   return SDL_APP_CONTINUE;
 }

@@ -5,4 +5,4 @@
 #include <string>
 #include "../entity/entity.hh"
 
-Entity init_player(SDL_Renderer *renderer);
+void init_player(SDL_Renderer *renderer);

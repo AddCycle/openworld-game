@@ -6,6 +6,8 @@ static cute_tiled_map_t *map;
 static cute_tiled_layer_t *layer;
 static cute_tiled_tileset_t *tileset;
 static Texture *texture;
+
+// FIXME : change all the dummy functions
 static void noop_update(float) {}
 static void noop_events(SDL_Event *) {}
 static void noop_cleanup() {}
@@ -73,13 +75,13 @@ static void render(SDL_Renderer *renderer)
   }
 }
 
-Entity init_map(SDL_Renderer *renderer)
+void init_map(SDL_Renderer *renderer)
 {
   const char *base_path = SDL_GetBasePath(); // folder containing the exe
   if (!base_path)
   {
     SDL_Log("SDL_GetBasePath failed: %s", SDL_GetError());
-    return {nullptr, nullptr, nullptr, nullptr};
+    return;
   }
 
   // Make sure to add a slash if SDL_GetBasePath doesn't have one
@@ -99,7 +101,7 @@ Entity init_map(SDL_Renderer *renderer)
   {
     SDL_Log("Failed to load map: %s", SDL_GetError());
     SDL_Log("Tried path: %s", map_path);
-    return {nullptr, nullptr, nullptr, nullptr};
+    return;
   }
   SDL_Log("Map loaded successfully");
 
@@ -119,14 +121,15 @@ Entity init_map(SDL_Renderer *renderer)
         c = '/';
 
     current_texture->texture = IMG_LoadTexture(renderer, texture_path.c_str());
+
     if (!current_texture->texture)
     {
       SDL_Log("Error loading texture for tileset: %s", texture_path.c_str());
+      continue;
     }
-    else
-    {
-      SDL_Log("Texture loaded successfully: %s", texture_path.c_str());
-    }
+
+    SDL_Log("Texture loaded successfully: %s", texture_path.c_str());
+    SDL_SetTextureScaleMode(current_texture->texture, SDL_SCALEMODE_NEAREST);
 
     current_texture->firstgid = tileset->firstgid;
     current_texture->tilecount = tileset->tilecount;
@@ -147,5 +150,6 @@ Entity init_map(SDL_Renderer *renderer)
   }
 
   Entity map_e = {noop_cleanup, noop_events, render, noop_update}; // FIXME : free the memory... someones pc is going to crash
-  return map_e;
+
+  create_entity(map_e);
 }
