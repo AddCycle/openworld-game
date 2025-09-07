@@ -2,7 +2,7 @@
 #include "../entity/entity.hh"
 
 static int scale = 1;
-static int speed = 50;
+static int speed = 300;
 static SDL_Texture *player_texture;
 static SDL_FRect player_sprite = {17, 14, 15, 18};
 
@@ -52,10 +52,10 @@ static void render(SDL_Renderer *renderer)
   if (camera.y <= 0)
     final_y = player_position.y - player_sprite.h / 2;
 
-  if (camera.x + camera.w >= 420)
-    final_x = player_position.x - (420 - camera.w) - player_sprite.w / 2;
-  if (camera.y + camera.h >= 240)
-    final_y = player_position.y - (240 - camera.h) - player_sprite.h / 2;
+  if (camera.x + camera.w >= 480)
+    final_x = player_position.x - (480 - camera.w) - player_sprite.w / 2;
+  if (camera.y + camera.h >= 300 + 16)
+    final_y = player_position.y - (300 + 16 - camera.h) - player_sprite.h / 2;
 
   SDL_FRect player_pos = {final_x, final_y, player_sprite.w * scale, player_sprite.h * scale};
   SDL_RenderTexture(renderer, player_texture, &player_sprite, &player_pos);

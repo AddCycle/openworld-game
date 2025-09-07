@@ -12,10 +12,10 @@ static void update(float delta_time)
   if (camera.y < 0)
     camera.y = 0;
 
-  if (camera.x + camera.w > 420)
-    camera.x = 420 - camera.w;
-  if (camera.y + camera.h > 240)
-    camera.y = 240 - camera.h;
+  if (camera.x + camera.w > 480)
+    camera.x = 480 - camera.w;
+  if (camera.y + camera.h > 300 + 16)
+    camera.y = 300 + 16 - camera.h;
 }
 
 void init_camera(SDL_Renderer *renderer)
