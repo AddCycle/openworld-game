@@ -10,7 +10,36 @@ static Texture *texture;
 // FIXME : change all the dummy functions
 static void noop_update(float) {}
 static void noop_events(SDL_Event *) {}
-static void noop_cleanup() {}
+
+// free all the memory
+static void cleanup()
+{
+  if (texture)
+  {
+    Texture *current_texture = texture;
+
+    while (current_texture)
+    {
+      Texture *next_texture = current_texture->next;
+
+      if (current_texture->texture)
+      {
+        SDL_DestroyTexture(current_texture->texture);
+      }
+
+      SDL_free(current_texture);
+      current_texture = next_texture;
+    }
+
+    texture = nullptr;
+  }
+
+  if (map)
+  {
+    cute_tiled_free_map(map);
+    map = nullptr;
+  }
+}
 
 static void render(SDL_Renderer *renderer)
 {
@@ -149,7 +178,7 @@ void init_map(SDL_Renderer *renderer)
     }
   }
 
-  Entity map_e = {noop_cleanup, noop_events, render, noop_update}; // FIXME : free the memory... someones pc is going to crash
+  Entity map_e = {.name = "MAP", cleanup, noop_events, render, noop_update}; // FIXME : free the memory... someones pc is going to crash
 
   create_entity(map_e);
 }

@@ -20,7 +20,7 @@ static void update(float delta_time)
 
 void init_camera(SDL_Renderer *renderer)
 {
-  Entity camera = {.update = update};
+  Entity camera = {.name = "CAMERA", .update = update};
 
   create_entity(camera);
 }

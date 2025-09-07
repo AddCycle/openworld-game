@@ -6,39 +6,61 @@ static int speed = 300;
 static SDL_Texture *player_texture;
 static SDL_FRect player_sprite = {17, 14, 15, 18};
 
-Position player_position = {0, 0};
+Position player_position = {player_sprite.w, player_sprite.h};
 
 static void cleanup()
 {
+  if (player_texture)
+  {
+    SDL_DestroyTexture(player_texture);
+  }
 }
 
 static void handle_events(SDL_Event *events)
 {
 }
 
+static bool check_map_bounds_horizontally(int x, int width)
+{
+  return x >= 0 && x <= width;
+}
+
+static bool check_map_bounds_vertically(int y, int height)
+{
+  return y >= 0 && y <= height;
+}
+
 static void update(float delta_time)
 {
   const bool *keyboard_state = SDL_GetKeyboardState(NULL);
+  float new_x = player_position.x;
+  float new_y = player_position.y;
 
-  if (keyboard_state[SDL_SCANCODE_W] || keyboard_state[SDL_SCANCODE_UP])
+  if ((keyboard_state[SDL_SCANCODE_W] || keyboard_state[SDL_SCANCODE_UP]))
   {
-    player_position.y -= speed * delta_time;
+    new_y -= speed * delta_time;
   }
-  if (keyboard_state[SDL_SCANCODE_S] || keyboard_state[SDL_SCANCODE_DOWN])
+  if ((keyboard_state[SDL_SCANCODE_S] || keyboard_state[SDL_SCANCODE_DOWN]))
   {
-    player_position.y += speed * delta_time;
+    new_y += speed * delta_time;
   }
-  if (keyboard_state[SDL_SCANCODE_D] || keyboard_state[SDL_SCANCODE_RIGHT])
+  if ((keyboard_state[SDL_SCANCODE_D] || keyboard_state[SDL_SCANCODE_RIGHT]))
   {
-    player_position.x += speed * delta_time;
+    new_x += speed * delta_time;
   }
-  if (keyboard_state[SDL_SCANCODE_A] || keyboard_state[SDL_SCANCODE_LEFT])
+  if ((keyboard_state[SDL_SCANCODE_A] || keyboard_state[SDL_SCANCODE_LEFT]))
   {
-    player_position.x -= speed * delta_time;
+    new_x -= speed * delta_time;
   }
-  if (keyboard_state[SDL_SCANCODE_ESCAPE])
+
+  if (check_map_bounds_horizontally(new_x, 480)) // mapX
   {
-    exit(0);
+    player_position.x = new_x;
+  }
+
+  if (check_map_bounds_vertically(new_y, 300 + 16)) // mapY
+  {
+    player_position.y = new_y;
   }
 }
 
@@ -89,7 +111,7 @@ void init_player(SDL_Renderer *renderer)
     SDL_Log("Tried path: %s", full_path.c_str());
   }
 
-  Entity player = {cleanup, handle_events, render, update};
+  Entity player = {"PLAYER", cleanup, handle_events, render, update};
 
   create_entity(player);
 }
