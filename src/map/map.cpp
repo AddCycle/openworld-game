@@ -62,8 +62,8 @@ static void render(SDL_Renderer *renderer)
             (float)(map->tileheight)};
 
         SDL_FRect drect = {
-            (float)(j * map->tilewidth),
-            (float)(i * map->tileheight),
+            (float)(j * map->tilewidth - camera.x),
+            (float)(i * map->tileheight - camera.y),
             (float)(map->tilewidth),
             (float)(map->tileheight)};
 

@@ -6,3 +6,4 @@
 #include "../player/player.hh"
 #include "../entity/entity.hh"
 #include "../map/map.hh"
+#include "../camera/camera.hh"

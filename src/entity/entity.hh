@@ -15,25 +15,29 @@ typedef struct
 #define RENDER_ENTITIES(entities, entities_count, renderer) \
   for (int i = 0; i < entities_count; i++)                  \
   {                                                         \
-    entities[i].render(renderer);                           \
+    if (entities[i].render)                                 \
+      entities[i].render(renderer);                         \
   }
 
 #define UPDATE_ENTITIES(entities, entities_count, delta_time) \
   for (int i = 0; i < entities_count; i++)                    \
   {                                                           \
-    entities[i].update(delta_time);                           \
+    if (entities[i].update)                                   \
+      entities[i].update(delta_time);                         \
   }
 
 #define CLEAN_ENTITIES(entities, entities_count) \
   for (int i = 0; i < entities_count; i++)       \
   {                                              \
-    entities[i].cleanup();                       \
+    if (entities[i].cleanup)                     \
+      entities[i].cleanup();                     \
   }
 
 #define HANDLE_EVENTS_ENTITIES(entities, entities_count, event) \
   for (int i = 0; i < entities_count; i++)                      \
   {                                                             \
-    entities[i].handle_events(event);                           \
+    if (entities[i].handle_events)                              \
+      entities[i].handle_events(event);                         \
   }
 
 void create_entity(Entity entity);

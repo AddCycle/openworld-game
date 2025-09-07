@@ -7,11 +7,13 @@ add_subdirectory(player)
 add_subdirectory(entity)
 # add_subdirectory(sdl)
 add_subdirectory(map)
+add_subdirectory(camera)
 
 target_link_libraries(game PRIVATE player)
 target_link_libraries(game PRIVATE entity)
 # target_link_libraries(game PRIVATE sdl)
 target_link_libraries(game PRIVATE map)
+target_link_libraries(game PRIVATE camera)
 
 # Include SDL3 headers
 target_include_directories(game PRIVATE "C:/SDL3/include")

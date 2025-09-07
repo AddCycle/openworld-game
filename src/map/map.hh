@@ -3,6 +3,7 @@
 #include <SDL3_image/SDL_image.h>
 #include "../entity/entity.hh"
 #include "../external/cute_tiled.hh"
+#include "../camera/camera.hh"
 
 typedef struct Texture
 {
