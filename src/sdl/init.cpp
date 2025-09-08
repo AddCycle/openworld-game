@@ -1,4 +1,5 @@
 #include "init.hh"
+#include "../font/font.hh"
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv)
 {
@@ -10,10 +11,11 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv)
     return SDL_APP_FAILURE;
   }
 
+  int scale = 2; // rescale it to monitor size
   state->window = SDL_CreateWindow(
-      "SDL3 Game",
-      1280,
-      720,
+      "OpenWorld Prototype",
+      1280 * scale,
+      720 * scale,
       NULL);
 
   if (!state->window)
@@ -41,6 +43,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv)
 
   // 320x180 || 640x320
   SDL_SetRenderLogicalPresentation(state->renderer, 320, 180, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+
+  TTF_Init();
 
   return SDL_APP_CONTINUE;
 }

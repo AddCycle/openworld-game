@@ -19,4 +19,5 @@ install(TARGETS game RUNTIME DESTINATION bin)  # for Windows
 install(DIRECTORY src/assets/ DESTINATION bin/assets)
 install(FILES "C:/SDL3/lib/x64/SDL3.dll"
               "C:/SDL3/lib/x64/SDL3_image.dll"
+              "C:/SDL3/lib/x64/SDL3_ttf.dll"
               DESTINATION bin)

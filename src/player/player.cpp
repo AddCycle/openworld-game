@@ -22,12 +22,12 @@ static void handle_events(SDL_Event *events)
 
 static bool check_map_bounds_horizontally(int x, int width)
 {
-  return x >= 0 && x <= width;
+  return x - player_sprite.w / 2 >= 0 && x + player_sprite.w / 2 <= width;
 }
 
 static bool check_map_bounds_vertically(int y, int height)
 {
-  return y >= 0 && y <= height;
+  return y - player_sprite.w / 2 >= 0 && y + player_sprite.h / 2 <= height;
 }
 
 static void update(float delta_time)

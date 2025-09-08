@@ -1,4 +1,5 @@
 #include "cleanup.hh"
+#include "../font/font.hh"
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
@@ -11,6 +12,7 @@ void EXIT_PROGRAM_CLEAN(void *appstate)
   SDL_Log("freeing...");
   AppState *state = (AppState *)appstate;
   CLEAN_ENTITIES(entities, entities_count);
+  TTF_Quit();
   SDL_DestroyRenderer(state->renderer);
   SDL_DestroyWindow(state->window);
   SDL_QuitSubSystem(SDL_INIT_VIDEO);
