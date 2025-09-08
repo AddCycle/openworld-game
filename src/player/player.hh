@@ -6,11 +6,15 @@
 #include "../entity/entity.hh"
 #include "../camera/camera.hh"
 
+static Animation walkAnim;
+
 typedef struct
 {
   float x, y;
 } Position;
 
 void init_player(SDL_Renderer *renderer);
+
+void updateAnimation(Animation *animation);
 
 extern Position player_position;

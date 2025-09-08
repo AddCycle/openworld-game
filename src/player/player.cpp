@@ -2,9 +2,9 @@
 #include "../entity/entity.hh"
 
 static int scale = 1;
-static int speed = 300;
+static int speed = 100;
 static SDL_Texture *player_texture;
-static SDL_FRect player_sprite = {17, 14, 15, 18};
+static SDL_FRect player_sprite = {17, 16, 16, 16};
 
 Position player_position = {player_sprite.w, player_sprite.h};
 
@@ -32,6 +32,7 @@ static bool check_map_bounds_vertically(int y, int height)
 
 static void update(float delta_time)
 {
+  bool isMoving = false;
   const bool *keyboard_state = SDL_GetKeyboardState(NULL);
   float new_x = player_position.x;
   float new_y = player_position.y;
@@ -39,18 +40,26 @@ static void update(float delta_time)
   if ((keyboard_state[SDL_SCANCODE_W] || keyboard_state[SDL_SCANCODE_UP]))
   {
     new_y -= speed * delta_time;
+    walkAnim.row = 3;
+    isMoving = true;
   }
   if ((keyboard_state[SDL_SCANCODE_S] || keyboard_state[SDL_SCANCODE_DOWN]))
   {
     new_y += speed * delta_time;
+    walkAnim.row = 0;
+    isMoving = true;
   }
   if ((keyboard_state[SDL_SCANCODE_D] || keyboard_state[SDL_SCANCODE_RIGHT]))
   {
     new_x += speed * delta_time;
+    walkAnim.row = 2;
+    isMoving = true;
   }
   if ((keyboard_state[SDL_SCANCODE_A] || keyboard_state[SDL_SCANCODE_LEFT]))
   {
     new_x -= speed * delta_time;
+    walkAnim.row = 1;
+    isMoving = true;
   }
 
   if (check_map_bounds_horizontally(new_x, 480)) // mapX
@@ -61,6 +70,15 @@ static void update(float delta_time)
   if (check_map_bounds_vertically(new_y, 300 + 16)) // mapY
   {
     player_position.y = new_y;
+  }
+
+  if (isMoving)
+  {
+    updateAnimation(&walkAnim);
+  }
+  else
+  {
+    walkAnim.frame = 0; // idle frame
   }
 }
 
@@ -79,8 +97,18 @@ static void render(SDL_Renderer *renderer)
   if (camera.y + camera.h >= 300 + 16)
     final_y = player_position.y - (300 + 16 - camera.h) - player_sprite.h / 2;
 
-  SDL_FRect player_pos = {final_x, final_y, player_sprite.w * scale, player_sprite.h * scale};
-  SDL_RenderTexture(renderer, player_texture, &player_sprite, &player_pos);
+  // --- Animation frame rect ---
+  SDL_FRect dst = {final_x, final_y,
+                   (float)(walkAnim.frameWidth * scale),
+                   (float)(walkAnim.frameHeight * scale)};
+
+  SDL_FRect src = {(float)(walkAnim.frame * walkAnim.frameWidth + walkAnim.offsetX),
+                   (float)(walkAnim.offsetY + walkAnim.row * walkAnim.frameHeight),
+                   (float)(walkAnim.frameWidth), (float)(walkAnim.frameHeight)};
+
+  SDL_RenderTexture(renderer, player_texture, &src, &dst);
+  // SDL_FRect player_pos = {final_x, final_y, player_sprite.w * scale, player_sprite.h * scale};
+  // SDL_RenderTexture(renderer, player_texture, &player_sprite, &player_pos);
 }
 
 void init_player(SDL_Renderer *renderer)
@@ -113,5 +141,26 @@ void init_player(SDL_Renderer *renderer)
 
   Entity player = {"PLAYER", cleanup, handle_events, render, update};
 
+  walkAnim = (Animation){
+      .frame = 0,
+      .frameCount = 6, // frames in the sheet
+      .frameWidth = (int)(player_sprite.w),
+      .frameHeight = (int)(player_sprite.h),
+      .frameDuration = 100, // ms
+      .lastFrameTime = 0,
+      .offsetX = (int)(player_sprite.x),
+      .offsetY = (int)(player_sprite.y),
+      .row = 0};
+
   create_entity(player);
+}
+
+void updateAnimation(Animation *anim)
+{
+  Uint32 now = SDL_GetTicks();
+  if (now - anim->lastFrameTime > anim->frameDuration)
+  {
+    anim->frame = (anim->frame + 1) % anim->frameCount;
+    anim->lastFrameTime = now;
+  }
 }

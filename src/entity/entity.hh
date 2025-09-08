@@ -16,6 +16,19 @@ typedef struct
   void (*update)(float);
 } Entity;
 
+typedef struct
+{
+  int frame;
+  int frameCount;
+  int frameWidth;
+  int frameHeight;
+  Uint32 frameDuration; // in ms
+  Uint32 lastFrameTime;
+  int offsetX;
+  int offsetY;
+  int row;
+} Animation;
+
 #define RENDER_ENTITIES(entities, entities_count, renderer) \
   for (int i = 0; i < entities_count; i++)                  \
   {                                                         \
