@@ -2,7 +2,7 @@
 #include "../entity/entity.hh"
 
 static int scale = 1;
-static int speed = 100;
+static int speed = 300;
 static SDL_Texture *player_texture;
 static SDL_FRect player_sprite = {17, 16, 16, 16};
 

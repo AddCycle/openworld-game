@@ -53,9 +53,27 @@ static void render(SDL_Renderer *renderer)
       continue;
     }
 
-    for (int i = 0; i < map->height; i++)
+    // FIX : only rendering visible tiles
+    int tileW = map->tilewidth;
+    int tileH = map->tileheight;
+
+    // actual code
+    int startX = SDL_max(0, (int)camera.x / tileW);
+    int startY = SDL_max(0, (int)camera.y / tileH);
+    int endX = SDL_min(map->width, (int)(camera.x + camera.w) / tileW + 1);
+    int endY = SDL_min(map->height, (int)(camera.y + camera.h) / tileH + 1);
+    // int endX = SDL_min(map->width, (int)(camera.x + camera.w) / tileW);
+    // int endY = SDL_min(map->height, (int)(camera.y + camera.h) / tileH);
+
+    // only for debugging
+    // int startX = 0;
+    // int startY = 0;
+    // int endX = map->width;
+    // int endY = map->height;
+
+    for (int i = startY; i < endY; i++)
     {
-      for (int j = 0; j < map->width; j++)
+      for (int j = startX; j < endX; j++)
       {
         int tile_id = temp_layer->data[i * map->width + j];
         if (tile_id == 0)
@@ -93,6 +111,8 @@ static void render(SDL_Renderer *renderer)
         SDL_FRect drect = {
             (float)(j * map->tilewidth - camera.x),
             (float)(i * map->tileheight - camera.y),
+            // (float)(j * map->tilewidth),  // without camera for debug
+            // (float)(i * map->tileheight), // without camera
             (float)(map->tilewidth),
             (float)(map->tileheight)};
 
@@ -102,6 +122,16 @@ static void render(SDL_Renderer *renderer)
 
     temp_layer = temp_layer->next;
   }
+
+  // DEBUG: camera rendering outline...
+  /*SDL_FRect cameraRect = {
+      (float)camera.x * 100,
+      (float)camera.y * 100,
+      (float)camera.w,
+      (float)camera.h};
+
+  SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+  SDL_RenderRect(renderer, &cameraRect);*/
 }
 
 void init_map(SDL_Renderer *renderer)
