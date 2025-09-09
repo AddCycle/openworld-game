@@ -11,7 +11,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv)
     return SDL_APP_FAILURE;
   }
 
-  int scale = 2; // rescale it to monitor size
+  int scale = 1; // rescale it to monitor size
   state->window = SDL_CreateWindow(
       "OpenWorld Prototype",
       1280 * scale,

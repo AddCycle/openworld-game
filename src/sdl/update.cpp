@@ -21,5 +21,6 @@ void app_update(void *appstate)
   if (keyboard_state[SDL_SCANCODE_ESCAPE])
   {
     EXIT_PROGRAM_CLEAN(appstate);
+    exit(0);
   }
 }

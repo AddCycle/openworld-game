@@ -6,9 +6,21 @@ static cute_tiled_map_t *map;
 static cute_tiled_layer_t *layer;
 static cute_tiled_tileset_t *tileset;
 static Texture *texture;
+static float scale = 1.f; // zooming in-out not working because needs to wire it to all objects
 
-// FIXME : change all the dummy functions
-static void noop_update(float) {}
+// FIXME : fix the zooming logic that is broken for now
+static void update(float)
+{
+  const bool *keyboard_state = SDL_GetKeyboardState(NULL);
+  if (keyboard_state[SDL_SCANCODE_Z])
+  {
+    scale += 0.1f;
+  }
+  if (keyboard_state[SDL_SCANCODE_X])
+  {
+    scale -= 0.1f;
+  }
+}
 static void noop_events(SDL_Event *) {}
 
 // free all the memory
@@ -60,8 +72,8 @@ static void render(SDL_Renderer *renderer)
     // actual code
     int startX = SDL_max(0, (int)camera.x / tileW);
     int startY = SDL_max(0, (int)camera.y / tileH);
-    int endX = SDL_min(map->width, (int)(camera.x + camera.w) / tileW + 1);
-    int endY = SDL_min(map->height, (int)(camera.y + camera.h) / tileH + 1);
+    int endX = SDL_min(map->width, (int)(camera.x + camera.w / scale) / tileW + 1);
+    int endY = SDL_min(map->height, (int)(camera.y + camera.h / scale) / tileH + 1);
     // int endX = SDL_min(map->width, (int)(camera.x + camera.w) / tileW);
     // int endY = SDL_min(map->height, (int)(camera.y + camera.h) / tileH);
 
@@ -109,12 +121,12 @@ static void render(SDL_Renderer *renderer)
             (float)(map->tileheight)};
 
         SDL_FRect drect = {
-            (float)(j * map->tilewidth - camera.x),
-            (float)(i * map->tileheight - camera.y),
+            (float)(j * map->tilewidth - camera.x) * scale,
+            (float)(i * map->tileheight - camera.y) * scale,
             // (float)(j * map->tilewidth),  // without camera for debug
             // (float)(i * map->tileheight), // without camera
-            (float)(map->tilewidth),
-            (float)(map->tileheight)};
+            (float)(map->tilewidth) * scale,
+            (float)(map->tileheight) * scale};
 
         SDL_RenderTexture(renderer, texture_to_use->texture, &srect, &drect);
       }
@@ -208,7 +220,7 @@ void init_map(SDL_Renderer *renderer)
     }
   }
 
-  Entity map_e = {.name = "MAP", cleanup, noop_events, render, noop_update}; // FIXME : free the memory... someones pc is going to crash
+  Entity map_e = {"MAP", cleanup, noop_events, render, update}; // FIXME : free the memory... someones pc is going to crash
 
   create_entity(map_e);
 }
