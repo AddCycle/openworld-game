@@ -15,6 +15,23 @@ void create_entity(Entity entity)
   }
 }
 
+void create_entity_at(int index, Entity entity)
+{
+  if (entities_count >= MAX_ENTITIES)
+  {
+    SDL_Log("Maximum number of entities reached\n");
+    return;
+  }
+
+  for (int i = entities_count; i > index; i--)
+  {
+    entities[i] = entities[i - 1];
+  }
+
+  entities[index] = entity;
+  entities_count++;
+}
+
 void delete_entity(int index)
 {
   if (index < 0 || index >= MAX_ENTITIES)

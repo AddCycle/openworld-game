@@ -58,6 +58,7 @@ typedef struct
   }
 
 void create_entity(Entity entity);
+void create_entity_at(int index, Entity entity);
 
 void delete_entity(int index);
 

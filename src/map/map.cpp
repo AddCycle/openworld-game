@@ -197,11 +197,14 @@ void change_map(const char *old_map_name, const char *new_map_name, SDL_Renderer
 {
   delete_entity(find_entity(old_map_name));
 
-  Entity map_e = {new_map_name, cleanup, noop_events, render, update};
+  // Entity map_e = {new_map_name, cleanup, noop_events, render, update};
 
-  create_entity(map_e);
-
+  // create_entity_at(0, map_e);
   init_map(renderer, new_map_name);
+
+  swap_entities(find_entity("PLAYER"), find_entity(new_map_name));
+
+  display_entities(entities);
 }
 
 void change_map(std::string old_map_name, std::string new_map_name, SDL_Renderer *renderer)
