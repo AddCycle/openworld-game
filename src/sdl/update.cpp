@@ -16,9 +16,24 @@ void app_update(void *appstate)
   {
     if (!changed)
     {
-      change_map("overworld", "dungeon", state->renderer);
+      if (current_map == "overworld")
+      {
+        change_map(current_map, "dungeon", state->renderer);
+      }
+      else if (current_map == "dungeon")
+      {
+        change_map(current_map, "overworld2", state->renderer);
+      }
+      else if (current_map == "overworld2")
+      {
+        change_map(current_map, "overworld", state->renderer);
+      }
       changed = true;
     }
+  }
+  else
+  {
+    changed = false;
   }
 
   // FPS count

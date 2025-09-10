@@ -25,3 +25,13 @@ void init_map(SDL_Renderer *renderer, std::string map_name);
 
 void change_map(const char *old_map_name, const char *new_map_name, SDL_Renderer *renderer);
 void change_map(std::string old_map_name, std::string new_map_name, SDL_Renderer *renderer);
+
+extern const char *current_map;
+
+// enum class MAPS
+// {
+//   OVERWORLD,
+//   DUNGEON,
+//   OVERWORLD2,
+//   NONE
+// };

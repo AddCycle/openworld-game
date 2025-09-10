@@ -7,6 +7,17 @@
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "dungeon.tmx": {
+            "scale": 3.103333333333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 239.90332975295382,
+                "y": 159.98925886143934
+            }
+        },
+        "dungeon.tmx#Dungeon_Tileset": {
+            "scaleInDock": 1.5
+        },
         "overworld.tmx": {
             "scale": 2,
             "selectedLayer": 7,

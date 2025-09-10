@@ -8,6 +8,7 @@ static cute_tiled_layer_t *layer;
 static cute_tiled_tileset_t *tileset;
 static Texture *texture;
 static float scale = 1.f; // zooming in-out not working because needs to wire it to all objects
+static const char *current_map;
 
 // FIXME : fix the zooming logic that is broken for now
 static void update(float)
@@ -186,6 +187,7 @@ void init_map(SDL_Renderer *renderer, const char *map_name)
   Entity map_e = {map_name, cleanup, noop_events, render, update};
 
   create_entity(map_e);
+  current_map = map_name;
 }
 
 void init_map(SDL_Renderer *renderer, std::string map_name)
@@ -197,12 +199,11 @@ void change_map(const char *old_map_name, const char *new_map_name, SDL_Renderer
 {
   delete_entity(find_entity(old_map_name));
 
-  // Entity map_e = {new_map_name, cleanup, noop_events, render, update};
-
-  // create_entity_at(0, map_e);
   init_map(renderer, new_map_name);
 
   swap_entities(find_entity("PLAYER"), find_entity(new_map_name));
+
+  current_map = new_map_name;
 
   display_entities(entities);
 }
