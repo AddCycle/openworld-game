@@ -63,12 +63,41 @@ static void update(float delta_time)
     walkAnim.row = 1;
     isMoving = true;
   }
-  if (check_map_bounds_horizontally(new_x, 480)) // mapX
+
+  // int tileX_h = (int)((new_x + player_sprite.w / 2) / 16);             // right edge
+  // int tileX_l = (int)((new_x - player_sprite.w / 2) / 16);             // left edge
+  // int tileY_h = (int)((player_position.y + player_sprite.h / 2) / 16); // bottom edge
+  // int tileY_l = (int)((player_position.y - player_sprite.h / 2) / 16); // top edge
+  int tileX_h = (int)((new_x) / 16);             // right edge
+  int tileX_l = (int)((new_x) / 16);             // left edge
+  int tileY_h = (int)((player_position.y) / 16); // bottom edge
+  int tileY_l = (int)((player_position.y) / 16); // top edge
+
+  // Horizontal
+  if (check_map_bounds_horizontally(new_x, 480) &&
+      !is_tile_solid(tileX_h, tileY_h) &&
+      !is_tile_solid(tileX_h, tileY_l) &&
+      !is_tile_solid(tileX_l, tileY_h) &&
+      !is_tile_solid(tileX_l, tileY_l))
   {
     player_position.x = new_x;
   }
 
-  if (check_map_bounds_vertically(new_y, 320)) // mapY
+  // Vertical (recalculate edges using new Y)
+  // tileY_h = (int)((new_y + player_sprite.h / 4) / 16);
+  // tileY_l = (int)((new_y - player_sprite.h / 4) / 16);
+  // tileX_h = (int)((player_position.x + player_sprite.w / 4) / 16);
+  // tileX_l = (int)((player_position.x - player_sprite.w / 4) / 16);
+  tileY_h = (int)((new_y) / 16);
+  tileY_l = (int)((new_y) / 16);
+  tileX_h = (int)((player_position.x) / 16);
+  tileX_l = (int)((player_position.x) / 16);
+
+  if (check_map_bounds_vertically(new_y, 320) &&
+      !is_tile_solid(tileX_h, tileY_h) &&
+      !is_tile_solid(tileX_h, tileY_l) &&
+      !is_tile_solid(tileX_l, tileY_h) &&
+      !is_tile_solid(tileX_l, tileY_l))
   {
     player_position.y = new_y;
   }
@@ -128,16 +157,27 @@ void init_player(SDL_Renderer *renderer)
 
   Entity player = {"PLAYER", cleanup, handle_events, render, update};
 
-  walkAnim = (Animation){
-      .frame = 0,
-      .frameCount = 6, // frames in the sheet
-      .frameWidth = (int)(player_sprite.w),
-      .frameHeight = (int)(player_sprite.h),
-      .frameDuration = 100, // ms
-      .lastFrameTime = 0,
-      .offsetX = (int)(player_sprite.x),
-      .offsetY = (int)(player_sprite.y),
-      .row = 0};
+  // walkAnim = (Animation){
+  //     .frame = 0,
+  //     .frameCount = 6, // frames in the sheet
+  //     .frameWidth = (int)(player_sprite.w),
+  //     .frameHeight = (int)(player_sprite.h),
+  //     .frameDuration = 100, // ms
+  //     .lastFrameTime = 0,
+  //     .offsetX = (int)(player_sprite.x),
+  //     .offsetY = (int)(player_sprite.y),
+  //     .row = 0};
+
+  walkAnim = {
+      0,
+      6, // frames in the sheet
+      (int)(player_sprite.w),
+      (int)(player_sprite.h),
+      100, // ms
+      0,
+      (int)(player_sprite.x),
+      (int)(player_sprite.y),
+      0};
 
   create_entity(player);
 }

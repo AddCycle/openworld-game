@@ -28,6 +28,8 @@ void change_map(std::string old_map_name, std::string new_map_name, SDL_Renderer
 
 extern const char *current_map;
 
+bool is_tile_solid(int x, int y);
+
 // enum class MAPS
 // {
 //   OVERWORLD,

@@ -5,6 +5,7 @@
 
 static cute_tiled_map_t *map;
 static cute_tiled_layer_t *layer;
+static cute_tiled_layer_t *collision_layer;
 static cute_tiled_tileset_t *tileset;
 static Texture *texture;
 static float scale = 1.f; // zooming in-out not working because needs to wire it to all objects
@@ -147,6 +148,31 @@ void init_map(SDL_Renderer *renderer, const char *map_name)
   layer = map->layers;
   tileset = map->tilesets;
 
+  // Checking collisions
+  collision_layer = nullptr;
+  cute_tiled_layer_t *tmp = map->layers;
+  while (tmp)
+  {
+    // tmp->type and tmp->name are cute_tiled_string_t unions; check ptr first
+    const char *t = tmp->type.ptr;
+    const char *n = tmp->name.ptr;
+    if (t && n)
+    {
+      if (strcmp(t, "tilelayer") == 0 && strcmp(n, "collision") == 0)
+      {
+        collision_layer = tmp;
+        SDL_Log("Found collision layer: %s", n);
+        break;
+      }
+    }
+    tmp = tmp->next;
+  }
+
+  if (!collision_layer)
+  {
+    SDL_Log("Warning: no 'Collisions' tile layer found in map");
+  }
+
   texture = (Texture *)SDL_malloc(sizeof(Texture));
 
   Texture *current_texture = texture;
@@ -211,4 +237,15 @@ void change_map(const char *old_map_name, const char *new_map_name, SDL_Renderer
 void change_map(std::string old_map_name, std::string new_map_name, SDL_Renderer *renderer)
 {
   change_map(old_map_name.c_str(), new_map_name.c_str(), renderer);
+}
+
+bool is_tile_solid(int x, int y)
+{
+  if (!collision_layer || !collision_layer->data)
+    return false;
+  if (x < 0 || y < 0 || x >= map->width || y >= map->height)
+    return true; // out of bounds = solid
+
+  int tile_id = collision_layer->data[y * map->width + x];
+  return tile_id != 0;
 }
