@@ -15,4 +15,13 @@ typedef struct Texture
   struct Texture *next;
 } Texture;
 
-void init_map(SDL_Renderer *renderer);
+typedef struct
+{
+  int x, y, w, h;
+} Map;
+
+void init_map(SDL_Renderer *renderer, const char *map_name);
+void init_map(SDL_Renderer *renderer, std::string map_name);
+
+void change_map(const char *old_map_name, const char *new_map_name, SDL_Renderer *renderer);
+void change_map(std::string old_map_name, std::string new_map_name, SDL_Renderer *renderer);

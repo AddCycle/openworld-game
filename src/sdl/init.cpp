@@ -33,13 +33,15 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv)
   }
 
   // initializing the map
-  init_map(state->renderer);
+  init_map(state->renderer, "overworld");
 
   // initializing the player
   init_player(state->renderer);
 
   // initializing the camera following player
   init_camera(state->renderer);
+
+  display_entities(entities);
 
   // 320x180 || 640x320
   SDL_SetRenderLogicalPresentation(state->renderer, 320, 180, SDL_LOGICAL_PRESENTATION_LETTERBOX);

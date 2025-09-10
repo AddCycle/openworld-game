@@ -1,5 +1,7 @@
 #include "player.hh"
 #include "../entity/entity.hh"
+#include "../utils/utils.hh"
+#include "../map/map.hh"
 
 static int scale = 1;
 static int speed = 300;
@@ -61,13 +63,12 @@ static void update(float delta_time)
     walkAnim.row = 1;
     isMoving = true;
   }
-
   if (check_map_bounds_horizontally(new_x, 480)) // mapX
   {
     player_position.x = new_x;
   }
 
-  if (check_map_bounds_vertically(new_y, 300 + 16)) // mapY
+  if (check_map_bounds_vertically(new_y, 320)) // mapY
   {
     player_position.y = new_y;
   }
@@ -113,21 +114,7 @@ static void render(SDL_Renderer *renderer)
 
 void init_player(SDL_Renderer *renderer)
 {
-  const char *base_path = SDL_GetBasePath(); // folder containing the exe
-  if (!base_path)
-  {
-    SDL_Log("SDL_GetBasePath failed: %s", SDL_GetError());
-    return;
-  }
-
-  // Make sure to add a slash if SDL_GetBasePath doesn't have one
-  std::string full_path = std::string(base_path) + "assets/Char_Sprites/char_spritesheet.png";
-  // SDL_free(base_path);
-
-  // Convert backslashes to forward slashes (Windows safe)
-  for (auto &c : full_path)
-    if (c == '\\')
-      c = '/';
+  std::string full_path = get_path("assets/Char_Sprites/char_spritesheet.png");
 
   SDL_Log("player texture init");
   player_texture = IMG_LoadTexture(renderer, full_path.c_str());

@@ -1,5 +1,8 @@
 #include "update.hh"
 #include "cleanup.hh"
+#include "../map/map.hh"
+
+static bool changed = false;
 
 void app_update(void *appstate)
 {
@@ -9,12 +12,21 @@ void app_update(void *appstate)
   state->current_tick = SDL_GetTicks();
   state->delta_time = (state->current_tick - state->last_tick) / 1000.0f;
 
-  // FPS count
-  if (state->delta_time > 0.0f)
+  if (keyboard_state[SDL_SCANCODE_SPACE])
   {
-    float fps = 1.0f / state->delta_time;
-    SDL_Log("FPS: %.2f", fps);
+    if (!changed)
+    {
+      change_map("overworld", "dungeon", state->renderer);
+      changed = true;
+    }
   }
+
+  // FPS count
+  // if (state->delta_time > 0.0f)
+  // {
+  //   float fps = 1.0f / state->delta_time;
+  //   SDL_Log("FPS: %.2f", fps);
+  // }
 
   UPDATE_ENTITIES(entities, entities_count, state->delta_time);
 

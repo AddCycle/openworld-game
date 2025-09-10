@@ -19,7 +19,7 @@ void delete_entity(int index)
 {
   if (index < 0 || index >= MAX_ENTITIES)
   {
-    SDL_Log("Index of entity isn't valid for deleting entity : %d\n", index);
+    SDL_Log("Index of entity isn't valid for deleting entity : %d of name: %s\n", index);
     return;
   }
 
@@ -57,4 +57,13 @@ int find_entity(const char *name)
     }
   }
   return -1;
+}
+
+void display_entities(Entity entities[])
+{
+  for (int i = 0; i < entities_count; i++)
+  {
+    Entity entity = entities[i];
+    SDL_Log("%d : %s\n", i, entity.name);
+  }
 }

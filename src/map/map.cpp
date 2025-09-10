@@ -1,5 +1,6 @@
 #define CUTE_TILED_IMPLEMENTATION
 #include "map.hh"
+#include "../utils/utils.hh"
 #include <string>
 
 static cute_tiled_map_t *map;
@@ -55,6 +56,8 @@ static void cleanup()
 
 static void render(SDL_Renderer *renderer)
 {
+  if (!map)
+    return;
   cute_tiled_layer_t *temp_layer = layer;
 
   while (temp_layer)
@@ -65,23 +68,13 @@ static void render(SDL_Renderer *renderer)
       continue;
     }
 
-    // FIX : only rendering visible tiles
     int tileW = map->tilewidth;
     int tileH = map->tileheight;
 
-    // actual code
     int startX = SDL_max(0, (int)camera.x / tileW);
     int startY = SDL_max(0, (int)camera.y / tileH);
     int endX = SDL_min(map->width, (int)(camera.x + camera.w / scale) / tileW + 1);
     int endY = SDL_min(map->height, (int)(camera.y + camera.h / scale) / tileH + 1);
-    // int endX = SDL_min(map->width, (int)(camera.x + camera.w) / tileW);
-    // int endY = SDL_min(map->height, (int)(camera.y + camera.h) / tileH);
-
-    // only for debugging
-    // int startX = 0;
-    // int startY = 0;
-    // int endX = map->width;
-    // int endY = map->height;
 
     for (int i = startY; i < endY; i++)
     {
@@ -123,8 +116,6 @@ static void render(SDL_Renderer *renderer)
         SDL_FRect drect = {
             (float)(j * map->tilewidth - camera.x) * scale,
             (float)(i * map->tileheight - camera.y) * scale,
-            // (float)(j * map->tilewidth),  // without camera for debug
-            // (float)(i * map->tileheight), // without camera
             (float)(map->tilewidth) * scale,
             (float)(map->tileheight) * scale};
 
@@ -134,35 +125,11 @@ static void render(SDL_Renderer *renderer)
 
     temp_layer = temp_layer->next;
   }
-
-  // DEBUG: camera rendering outline...
-  /*SDL_FRect cameraRect = {
-      (float)camera.x * 100,
-      (float)camera.y * 100,
-      (float)camera.w,
-      (float)camera.h};
-
-  SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-  SDL_RenderRect(renderer, &cameraRect);*/
 }
 
-void init_map(SDL_Renderer *renderer)
+void init_map(SDL_Renderer *renderer, const char *map_name)
 {
-  const char *base_path = SDL_GetBasePath(); // folder containing the exe
-  if (!base_path)
-  {
-    SDL_Log("SDL_GetBasePath failed: %s", SDL_GetError());
-    return;
-  }
-
-  // Make sure to add a slash if SDL_GetBasePath doesn't have one
-  std::string full_path = std::string(base_path) + "tiled/overworld.json";
-  // SDL_free(base_path);
-
-  // Convert backslashes to forward slashes (Windows safe)
-  for (auto &c : full_path)
-    if (c == '\\')
-      c = '/';
+  std::string full_path = get_path("tiled/" + std::string(map_name) + ".json");
 
   const char *map_path = full_path.c_str();
   map = cute_tiled_load_map_from_file(map_path, NULL);
@@ -185,11 +152,7 @@ void init_map(SDL_Renderer *renderer)
 
   while (tileset)
   {
-    std::string texture_path = std::string(base_path) + tileset->image.ptr;
-    // Convert backslashes to forward slashes
-    for (auto &c : texture_path)
-      if (c == '\\')
-        c = '/';
+    std::string texture_path = get_path(tileset->image.ptr);
 
     current_texture->texture = IMG_LoadTexture(renderer, texture_path.c_str());
 
@@ -220,7 +183,28 @@ void init_map(SDL_Renderer *renderer)
     }
   }
 
-  Entity map_e = {"MAP", cleanup, noop_events, render, update}; // FIXME : free the memory... someones pc is going to crash
+  Entity map_e = {map_name, cleanup, noop_events, render, update};
 
   create_entity(map_e);
+}
+
+void init_map(SDL_Renderer *renderer, std::string map_name)
+{
+  init_map(renderer, map_name.c_str());
+}
+
+void change_map(const char *old_map_name, const char *new_map_name, SDL_Renderer *renderer)
+{
+  delete_entity(find_entity(old_map_name));
+
+  Entity map_e = {new_map_name, cleanup, noop_events, render, update};
+
+  create_entity(map_e);
+
+  init_map(renderer, new_map_name);
+}
+
+void change_map(std::string old_map_name, std::string new_map_name, SDL_Renderer *renderer)
+{
+  change_map(old_map_name.c_str(), new_map_name.c_str(), renderer);
 }

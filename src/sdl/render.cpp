@@ -9,8 +9,8 @@ void app_render(void *appstate)
   // render entities on the screen
   RENDER_ENTITIES(entities, entities_count, state->renderer);
 
-  SDL_Log("ttf rendering text");
-  render_centered_text(state->renderer, "openworld_prototype", "PressStart2P", 10, 320 / 2, 20);
+  // rendering text
+  render_centered_text(state->renderer, "openworld_prototype", "PressStart2P", 12, 320 / 2, 20);
 
   SDL_RenderPresent(state->renderer);
 }

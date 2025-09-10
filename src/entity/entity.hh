@@ -9,7 +9,7 @@
 
 typedef struct
 {
-  char name[MAX_NAME_LENGTH];
+  const char *name;
   void (*cleanup)(void);
   void (*handle_events)(SDL_Event *);
   void (*render)(SDL_Renderer *);
@@ -64,6 +64,8 @@ void delete_entity(int index);
 void swap_entities(int index1, int index2);
 
 int find_entity(const char *name);
+
+void display_entities(Entity entities[]);
 
 extern Entity entities[MAX_ENTITIES];
 extern int entities_count;

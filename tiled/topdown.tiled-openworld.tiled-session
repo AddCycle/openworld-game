@@ -8,11 +8,11 @@
     ],
     "fileStates": {
         "overworld.tmx": {
-            "scale": 1.5,
+            "scale": 2,
             "selectedLayer": 7,
             "viewCenter": {
-                "x": 266,
-                "y": 106
+                "x": 313.25,
+                "y": 273.75
             }
         },
         "overworld.tmx#Overworld_Tileset": {
@@ -23,7 +23,7 @@
         }
     },
     "last.exportedFilePath": "C:/Users/adelb/GameDev/tiled",
-    "last.imagePath": "C:/Users/adelb/GameDev/src/assets/Tiles_(animated)/Overworld",
+    "last.imagePath": "C:/Users/adelb/GameDev/src/assets",
     "map.lastUsedExportFilter": "Fichiers de carte JSON (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,

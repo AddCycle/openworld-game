@@ -4,20 +4,9 @@ void render_text(SDL_Renderer *renderer, const std::string &text,
                  const std::string &font_file, int font_size,
                  int x, int y)
 {
-  const char *base_path = SDL_GetBasePath(); // folder containing the exe
-  if (!base_path)
-  {
-    SDL_Log("SDL_GetBasePath failed: %s", SDL_GetError());
+  std::string full_path = get_path("assets/fonts/" + font_file + ".ttf");
+  if (full_path.empty())
     return;
-  }
-
-  // Make sure to add a slash if SDL_GetBasePath doesn't have one
-  std::string full_path = std::string(base_path) + "assets/fonts/" + font_file + ".ttf";
-
-  // Convert backslashes to forward slashes (Windows safe)
-  for (auto &c : full_path)
-    if (c == '\\')
-      c = '/';
 
   TTF_Font *font = TTF_OpenFont(full_path.c_str(), font_size);
 
@@ -28,7 +17,6 @@ void render_text(SDL_Renderer *renderer, const std::string &text,
   }
 
   SDL_Color white = {255, 255, 255, 255};
-  SDL_Color black = {0, 0, 0, 255};
   SDL_Surface *surface = TTF_RenderText_Blended(font, text.c_str(), text.length(), white);
 
   if (!surface)
@@ -68,14 +56,9 @@ void render_centered_text(SDL_Renderer *renderer, const std::string &text,
                           const std::string &font_file, int font_size,
                           int x, int y)
 {
-  const char *base_path = SDL_GetBasePath();
-  if (!base_path)
+  std::string full_path = get_path("assets/fonts/" + font_file + ".ttf");
+  if (full_path.empty())
     return;
-
-  std::string full_path = std::string(base_path) + "assets/fonts/" + font_file + ".ttf";
-  for (auto &c : full_path)
-    if (c == '\\')
-      c = '/';
 
   TTF_Font *font = TTF_OpenFont(full_path.c_str(), font_size);
   if (!font)
